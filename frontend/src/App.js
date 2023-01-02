@@ -1,12 +1,12 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
-import Header from "./components/Header";
-import Search from "./components/Search";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState } from 'react';
+import Header from './components/Header';
+import Search from './components/Search';
 
 const UNSPLASH_KEY = process.env.REACT_APP_UNSPLASH_KEY;
 
 function App() {
-  const [word, setWord] = useState("");
+  const [word, setWord] = useState('');
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +18,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => console.log(data))
       .catch((err) => console.log(err));
-    setWord("");
+    setWord('');
   };
 
   return (
