@@ -5,6 +5,7 @@ import Header from './components/Header';
 import ImageCard from './components/ImageCard';
 import Search from './components/Search';
 import Welcome from './components/Welcome';
+import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
 
@@ -12,17 +13,25 @@ function App() {
   const [word, setWord] = useState('');
   const [images, setImages] = useState([]);
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
 
-    fetch(`${API_URL}/new-image?query=${word}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setImages([{ ...data, title: word }, ...images]);
-        //Because we dont have any title properties in retrieved json so we add manually and set search term to it
-      })
-      .catch((err) => console.log(err));
-    setWord('');
+    // fetch(`${API_URL}/new-image?query=${word}`)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setImages([{ ...data, title: word }, ...images]);
+    //     //Because we dont have any title properties in retrieved json so we add manually and set search term to it
+    //   })
+    //   .catch((err) => console.log(err));
+
+    try {
+      const res = await axios.get(`${API_URL}/new-image?query=${word}`);
+      console.log(res.data);
+      setImages([{ ...res.data, title: word }, ...images]);
+      setWord('');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDeleteImage = (id) => {
