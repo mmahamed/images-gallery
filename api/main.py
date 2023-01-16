@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 import requests
 from mongo_client import mongo_client
-import json
-from bson import json_util
 
 gallery = mongo_client.gallery
 images_collection = gallery.images
