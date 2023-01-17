@@ -7,6 +7,8 @@ import Search from './components/Search';
 import Welcome from './components/Welcome';
 import Spinner from './components/Spinner';
 import axios from 'axios';
+import { ToastContainer, toast, Flip } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
 
@@ -21,8 +23,11 @@ function App() {
         const res = await axios.get(`${API_URL}/images`);
         setImages(res.data || []);
         setLoading(false);
+        console.log('effect');
+        toast.success('Saved images downloaded');
       } catch (error) {
         console.log(error);
+        toast.error(error.message);
       }
     }
     getSavedImages();
@@ -43,8 +48,10 @@ function App() {
       const res = await axios.get(`${API_URL}/new-image?query=${word}`);
       setImages([{ ...res.data, title: word }, ...images]);
       setWord('');
+      toast.info(`New image ${word.toUpperCase()} was found`);
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -53,10 +60,16 @@ function App() {
       const res = await axios.delete(`${API_URL}/images/${id}`);
       if (res.status === 200) {
         // OR if (res.data?.deleted_id)
+        toast.warn(
+          `Image ${images
+            .find((image) => image.id === id)
+            .title.toUpperCase()} was deleted`
+        );
         setImages(images.filter((image) => image.id !== id));
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -72,9 +85,11 @@ function App() {
             image.id === id ? { ...image, saved: true } : image
           )
         );
+        toast.info(`Image ${imageToBeSaved.title.toUpperCase()} was saved`);
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -109,6 +124,11 @@ function App() {
           </Container>
         </>
       )}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={2000}
+        transition={Flip}
+      />
     </div>
   );
 }
