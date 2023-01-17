@@ -5,6 +5,7 @@ import Header from './components/Header';
 import ImageCard from './components/ImageCard';
 import Search from './components/Search';
 import Welcome from './components/Welcome';
+import Spinner from './components/Spinner';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
@@ -12,12 +13,14 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
 function App() {
   const [word, setWord] = useState('');
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getSavedImages() {
       try {
         const res = await axios.get(`${API_URL}/images`);
         setImages(res.data || []);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -78,24 +81,34 @@ function App() {
   return (
     <div>
       <Header title="Images Gallery" />
-      <Search word={word} setWord={setWord} handleSubmit={handleSearchSubmit} />
-      <Container className="mt-4">
-        {images.length === 0 ? (
-          <Welcome />
-        ) : (
-          <Row xs={1} md={2} lg={3}>
-            {images.map((image, index) => (
-              <Col key={index} className="pb-3">
-                <ImageCard
-                  image={image}
-                  handleDelete={handleDeleteImage}
-                  handleSave={handleSaveImage}
-                />
-              </Col>
-            ))}
-          </Row>
-        )}
-      </Container>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <Search
+            word={word}
+            setWord={setWord}
+            handleSubmit={handleSearchSubmit}
+          />
+          <Container className="mt-4">
+            {images.length === 0 ? (
+              <Welcome />
+            ) : (
+              <Row xs={1} md={2} lg={3}>
+                {images.map((image, index) => (
+                  <Col key={index} className="pb-3">
+                    <ImageCard
+                      image={image}
+                      handleDelete={handleDeleteImage}
+                      handleSave={handleSaveImage}
+                    />
+                  </Col>
+                ))}
+              </Row>
+            )}
+          </Container>
+        </>
+      )}
     </div>
   );
 }
